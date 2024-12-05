@@ -65,11 +65,12 @@ async def get_customer(last_name: str = None, email: str = None):
         
         
 @app.get("/customer/{customer_id}/sales")
-async def get_customer_sales(customer_id: int):
+async def get_customer_sales(customer_id: int, skip: int = 0, limit: int = 5):
     response = httpx.get(base_url + "/customer/" + str(customer_id) + "/sales", auth=(api_login, api_key))
+    pagination = 5 * skip	
     
     if response.status_code == 200:
         customer_sales = response.json()
-        return customer_sales
+        return {"data" : customer_sales[pagination : pagination + limit], "length": len(customer_sales[pagination : pagination + limit])}
     else:
         return {"error": response.status_code, "message": response.json()}
