@@ -1,10 +1,10 @@
-import logo from "./logo.svg";
 import "./App.css";
+import MyLogin from "./components/login/login";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">Little Boutik</header>
+      <MyLogin />
     </div>
   );
 }
