@@ -1,4 +1,11 @@
-# little boutik
+<a href="https://fr.legacy.reactjs.org/" target="_blank"> 
+    <img alt="React" src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB">
+</a>
+<a href="https://fr.legacy.reactjs.org/" target="_blank"> 
+    <img alt="React" src="https://img.shields.io/badge/fastapi-109989?style=for-the-badge&logo=FASTAPI&logoColor=white">
+</a>
+
+# Little Boutik
 This project consists of a technical test. A small application in React/FastAPI intended for tradesman.
 
 ## Backend
@@ -49,3 +56,7 @@ docker compose up --build
 ```
 
 The app will be available at : http://localhost:3000/
+
+The login credentials are :
+- Login: `admin`
+- Password : `admin`
