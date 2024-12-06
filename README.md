@@ -3,6 +3,10 @@ This project consists of a technical test. A small application in React/FastAPI 
 
 ## Backend
 
+### Environnment file
+
+You must create a .env file following the template and put the intended value.
+
 ### Activate Virtual Environment from Windows PS
 
 ```bash
