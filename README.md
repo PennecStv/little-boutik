@@ -7,9 +7,10 @@ This project consists of a technical test. A small application in React/FastAPI 
 
 You must create a .env file following the template and put the intended value.
 
-### Activate Virtual Environment from Windows PS
+### Create and Activate Virtual Environment from Windows PS
 
 ```bash
+python -m venv .venv
 .venv\Scripts\Activate.ps1
 ```
 
