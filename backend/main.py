@@ -117,7 +117,9 @@ async def get_customer_by_id(customer_id: int):
         
         
 @app.get("/customer/{customer_id}/sales")
-async def get_customer_sales(customer_id: int, skip: int = 0, limit: int = 5):
+async def get_customer_sales(customer_id: int, skip: int = 0, limit: int = 20): 
+    # Default values ofr limit was 5 as requested in challenge 5 
+    # But now the slicing is managed by the frontend with a Table component
     db = SessionLocal()
     sales = db.query(Sale).filter(Sale.customer_id == customer_id).offset(skip).limit(limit).all()
     db.close()
