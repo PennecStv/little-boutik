@@ -81,6 +81,6 @@ async def get_customer_sales(customer_id: int, skip: int = 0, limit: int = 5):
     
     if response.status_code == 200:
         customer_sales = response.json()
-        return {"data" : customer_sales[pagination : pagination + limit], "length": len(customer_sales[pagination : pagination + limit])}
+        return customer_sales[pagination : pagination + limit]
     else:
         return {"error": response.status_code, "message": response.json()}
