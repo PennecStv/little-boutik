@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from dotenv import load_dotenv
+from fastapi.middleware.cors import CORSMiddleware
 import os, httpx
 
 load_dotenv()
@@ -8,6 +9,15 @@ api_login = os.getenv("API_LOGIN")
 api_key = os.getenv("API_KEY")
 
 app = FastAPI()
+
+# Allow all origins (for development purposes)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
 
 @app.get("/")   
 async def root():
@@ -71,6 +81,6 @@ async def get_customer_sales(customer_id: int, skip: int = 0, limit: int = 5):
     
     if response.status_code == 200:
         customer_sales = response.json()
-        return {"data" : customer_sales[pagination : pagination + limit], "length": len(customer_sales[pagination : pagination + limit])}
+        return customer_sales[pagination : pagination + limit]
     else:
         return {"error": response.status_code, "message": response.json()}
