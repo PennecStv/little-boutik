@@ -1,12 +1,33 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
-import os, httpx
+from contextlib import asynccontextmanager
+from pydantic import BaseModel
+from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+import os, httpx, requests
 
 load_dotenv()
 base_url = os.getenv("BASE_URL")
 api_login = os.getenv("API_LOGIN")
 api_key = os.getenv("API_KEY")
+
+DATABASE_URL = "sqlite:///./test.db"
+
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+class Customer(Base):
+    __tablename__ = "customers"
+    id = Column(Integer, primary_key=True, index=True)
+    first_name = Column(String, index=True)
+    last_name = Column(String, index=True)
+
+class CustomerCreate(BaseModel):
+    first_name: str
+    last_name: str
 
 app = FastAPI()
 
@@ -19,13 +40,43 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-@app.get("/")   
-async def root():
-    return {"message": f"Welcome to my API!"}
-
 '''
 API ENDPOINTS
 '''
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Drop all tables and recreate them
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+    
+    # Make a request to an external API to get initial data
+    response = requests.get(base_url + "/customers", auth=(api_login, api_key))
+    if response.status_code == 200:
+        customers_data = response.json()
+        db = SessionLocal()
+        for customer_data in customers_data:
+            db_customer = Customer(
+                first_name=customer_data["first_name"],
+                last_name=customer_data["last_name"]
+            )
+            db.add(db_customer)
+        db.commit()
+        db.close()
+    else:
+        raise HTTPException(status_code=500, detail="Failed to fetch initial data")
+    
+    yield
+
+@app.post("/customers/", response_model=CustomerCreate)
+def create_customer(customer: CustomerCreate):
+    db = SessionLocal()
+    db_customer = Customer(first_name=customer.first_name, last_name=customer.last_name)
+    db.add(db_customer)
+    db.commit()
+    db.refresh(db_customer)
+    db.close()
+    return db_customer
 
 @app.get("/customers")
 async def get_customers():
@@ -84,3 +135,5 @@ async def get_customer_sales(customer_id: int, skip: int = 0, limit: int = 5):
         return customer_sales[pagination : pagination + limit]
     else:
         return {"error": response.status_code, "message": response.json()}
+    
+app = FastAPI(lifespan=lifespan)
