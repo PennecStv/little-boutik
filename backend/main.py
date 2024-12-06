@@ -12,10 +12,9 @@ load_dotenv()
 base_url = os.getenv("BASE_URL")
 api_login = os.getenv("API_LOGIN")
 api_key = os.getenv("API_KEY")
+database_url = os.getenv("DATABASE_URL")
 
-DATABASE_URL = "sqlite:///./test.db"
-
-engine = create_engine(DATABASE_URL)
+engine = create_engine(database_url)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
