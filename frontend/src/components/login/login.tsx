@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import './login.css';
+import { Button, TextField } from '@mui/material';
+import LoginIcon from '@mui/icons-material/Login';
 
 interface MyLoginProps {
   navigate: NavigateFunction;
@@ -30,18 +32,18 @@ class MyLogin extends Component<MyLoginProps, MyLoginState> {
     return (
       <div className='container login'>
         <div className="header">
-          <div className="text">
+          <div className="title">
             <h1>Little Boutik</h1>
           </div>
         </div>
         <div className="inputs">
-          <input 
-            type="text" 
-            placeholder="Username" 
+          <TextField id="outlined-basic" label="Login" variant="outlined" 
             value={this.state.username} 
             onChange={this.handleChange} 
           />
-          <button onClick={this.handleLogin}>Enter</button>
+          <Button variant="contained" onClick={this.handleLogin} startIcon={<LoginIcon />}>
+            Enter
+            </Button>
         </div>
       </div>
     );
